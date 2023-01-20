@@ -68,6 +68,19 @@ exports.likeSauce = (req, res, next) => {
 
         // like = 1 => like
         if(!sauce.usersLiked.includes(userId) && like === 1){
+            // si le user à deja dislike, on retire le dislike
+            if(sauce.usersDisliked.includes(userId)){
+                Sauce.updateOne(
+                    { _id: req.params.id },
+                    {
+                        $inc: { dislikes: -1 },
+                        $pull: { usersDisliked: userId}
+                    }
+                )
+                .then(() => res.status(201).json({message: "sauce dislike -1."}))
+                .catch(error => res.status(400).json({error}))
+            }
+            // on ajoute un like
             Sauce.updateOne(
                 { _id: req.params.id },
                 {
@@ -81,6 +94,19 @@ exports.likeSauce = (req, res, next) => {
 
         // like = -1 => dislike
         if(!sauce.usersDisliked.includes(userId) && like === -1){
+            // si le user a deja like, un suprime le like 
+            if(sauce.usersLiked.includes(userId)){
+                Sauce.updateOne(
+                    { _id: req.params.id },
+                    {
+                        $inc: { likes: -1 },
+                        $pull: { usersLiked: userId}
+                    }
+                )
+                .then(() => res.status(201).json({message: "sauce like -1."}))
+                .catch(error => res.status(400).json({error}))
+            }
+            // on ajoute un dislike
             Sauce.updateOne(
                 { _id: req.params.id },
                 {
