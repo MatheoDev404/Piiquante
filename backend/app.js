@@ -2,18 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
-// variables d'environement
+// variables d'environement module dotenv
 const dotenv = require("dotenv");
 dotenv.config();
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_LOGIN = process.env.DB_LOGIN;
+const DB_MONGODB = process.env.DB_MONGODB;
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 const app = express();
 
-mongoose.connect(`mongodb+srv://${DB_LOGIN}:${DB_PASSWORD}@piiquante.0tje2l7.mongodb.net/?retryWrites=true&w=majority`,
+mongoose.connect(`mongodb+srv://${DB_LOGIN}:${DB_PASSWORD}${DB_MONGODB}`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
