@@ -8,11 +8,6 @@ const JWT_TOKEN = process.env.JWT_TOKEN;
 const User = require('../models/User');
 
 exports.signup = (req, res, next) => {
-    // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
-    const passwordFormat = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    // if(req.body.password.match(passwordFormat)){
-    // }
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User({
@@ -24,8 +19,6 @@ exports.signup = (req, res, next) => {
             .catch(error => res.status(400).json({error}))
     })
     .catch(error => res.status(500).json({error}))
-    
-    
 };
 
 exports.login = (req, res, next) => {
