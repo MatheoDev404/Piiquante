@@ -42,9 +42,19 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
-    Sauce.deleteOne({ _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
-        .catch(error => res.status(400).json({error}));
+    Sauce.findOne({_id: req.params.id})
+    .then((sauce) => {
+        if (sauce.userId != req.auth.userId) {
+            res.status(401).json({ message : 'Pas autorisé.'});
+        } else {
+            Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
+            .catch(error => res.status(400).json({error}));
+        }
+    })
+    .catch((error) => {
+        res.status(400).json({ error });
+    });
 };
 
 exports.getOneSauce = (req, res, next) => {
@@ -61,7 +71,7 @@ exports.getallSauces = (req, res, next) => {
 
 exports.likeSauce = (req, res, next) => {
     like = req.body.like;
-    userId = req.body.userId;
+    userId = req.auth.userId;
     
     Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
